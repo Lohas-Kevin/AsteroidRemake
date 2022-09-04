@@ -9,16 +9,23 @@ public class GameManager : MonoBehaviour
     //The boundaries of the game space
     public GameObject TopRightCorner;
     public GameObject BottomLeftCorner;
+    public GameplayUI GameUI;
+    public int AvaliableLives = 3;
 
     //This is the delta for out of bound condition
     //the ship will be set inside the bound
     //this delta defines the distance between the spaceship and boundary
     public float OutOfBoundraryDelta = 0.05f;
+
+    private int _RemainingLives;
+    private int _Score = 0;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        _RemainingLives = AvaliableLives;
+        UpdateScore(_Score);
+        UpdateLives(_RemainingLives);
     }
 
     // Update is called once per frame
@@ -84,4 +91,28 @@ public class GameManager : MonoBehaviour
         return Result;
     }
 
+    public void UpdateScore(int Score)
+    {
+        GameUI.UpdateScoreUI(Score);
+    }
+
+    public void UpdateLives(int Lives)
+    {
+        GameUI.UpdateLivesUI(Lives);
+    }
+
+    public void AstDestroyed(int Score)
+    {
+        _Score += Score;
+        GameUI.UpdateScoreUI(_Score);
+    }
+
+    public void ShipDestroyed()
+    {
+        if(_RemainingLives > 0)
+        {
+            _RemainingLives -= 1;
+        }
+        GameUI.UpdateLivesUI(_RemainingLives);
+    }
 }

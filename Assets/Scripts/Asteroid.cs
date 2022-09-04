@@ -14,9 +14,12 @@ public class Asteroid : MonoBehaviour
     public GameObject MediumAst;
     public GameObject SmallAst;
     public float MaximumRandomSpeed = 15.0f;
-    public float MinimumRandomspeed = 5.0f;
+    public float MinimumRandomSpeed = 5.0f;
     public int MediumAstGenerated = 1;
     public int SmallAstGenerated = 3;
+    public int LargeAstScore = 250;
+    public int MediumAstScore = 125;
+    public int SmallAstScore = 75;
 
     private List<GameObject> _AstRefPool = new List<GameObject>();
     private GameManager _GameManager;
@@ -60,7 +63,7 @@ public class Asteroid : MonoBehaviour
         Rigidbody AstRig = InstantiatedGB.GetComponent<Rigidbody>();
         if (AstRig)
         {
-            AstRig.velocity = RandomVel * Random.Range(MinimumRandomspeed, MaximumRandomSpeed);
+            AstRig.velocity = RandomVel * Random.Range(MinimumRandomSpeed, MaximumRandomSpeed);
         }
     }
 
@@ -75,6 +78,9 @@ public class Asteroid : MonoBehaviour
             {
                 AstInstantiate(AsteroidType.Medium, AstRef);
             }
+
+            //update score
+            _GameManager.AstDestroyed(LargeAstScore);
             
             //remove the current ast ref from the ast pool and destroy teh ast
             _AstRefPool.Remove(AstRef);
@@ -87,12 +93,18 @@ public class Asteroid : MonoBehaviour
                 AstInstantiate(AsteroidType.Small, AstRef);
             }
 
+            //update score
+            _GameManager.AstDestroyed(MediumAstScore);
+
             //remove the current ast ref from the ast pool and destroy teh ast
             _AstRefPool.Remove(AstRef);
             Destroy(AstRef);
         }
         else
         {
+            //update score
+            _GameManager.AstDestroyed(SmallAstScore);
+
             //for small ast, removal is the only task required
             //remove the current ast ref from the ast pool and destroy teh ast
             _AstRefPool.Remove(AstRef);
@@ -134,7 +146,7 @@ public class Asteroid : MonoBehaviour
         Rigidbody AstRig = InstantiatedGB.GetComponent<Rigidbody>();
         if (AstRig)
         {
-            AstRig.velocity = RandomVel * Random.Range(MinimumRandomspeed, MaximumRandomSpeed);
+            AstRig.velocity = RandomVel * Random.Range(MinimumRandomSpeed, MaximumRandomSpeed);
         }
     }
 }
