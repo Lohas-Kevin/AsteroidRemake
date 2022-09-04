@@ -10,10 +10,13 @@ public class PlayerMovement : MonoBehaviour
     public float MaximumAngularSpeed = 20.0f;
 
     private Rigidbody _MyRig;
+    private GameManager GameManager;
+
     // Start is called before the first frame update
     void Start()
     {
         _MyRig = this.GetComponent<Rigidbody>();
+        GameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -21,6 +24,11 @@ public class PlayerMovement : MonoBehaviour
     {
         //put other input check here
 
+        //since boundrary check is not rigid body related, put it here
+        if (GameManager)
+        {
+            this.transform.position = GameManager.CheckAndModCood(this.transform.position);
+        }
     }
 
     //Physical calculations here
@@ -49,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         {
             _MyRig.angularVelocity = _MyRig.angularVelocity.normalized * MaximumAngularSpeed;
         }
+
         print(_MyRig.angularVelocity);
     }
 
@@ -109,5 +118,4 @@ public class PlayerMovement : MonoBehaviour
         }
         return RotateResult;
     }
-
 }
