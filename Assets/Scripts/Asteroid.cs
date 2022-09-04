@@ -1,0 +1,140 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum AsteroidType
+{
+    Large = 0, Medium = 1, Small = 2
+};
+
+//This is the manager class of the Asteroids
+public class Asteroid : MonoBehaviour
+{
+    public GameObject LargeAst;
+    public GameObject MediumAst;
+    public GameObject SmallAst;
+    public float MaximumRandomSpeed = 15.0f;
+    public float MinimumRandomspeed = 5.0f;
+    public int MediumAstGenerated = 1;
+    public int SmallAstGenerated = 3;
+
+    private List<GameObject> _AstRefPool = new List<GameObject>();
+    private GameManager _GameManager;
+    // Start is called before the first frame update
+    void Start()
+    {
+        InitialAstInstantiate();
+        _GameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //check whether the ast is out of bound
+        if (_GameManager)
+        {
+            foreach(GameObject GB in _AstRefPool)
+            {
+                if (GB)
+                {
+                    GB.transform.position = _GameManager.CheckAndModCood(GB.transform.position);
+                } 
+            }
+           
+        }
+    }
+
+    //This function is for GameManager to instantiate a Astroid
+    public void InitialAstInstantiate()
+    {
+        GameObject InstantiatedGB = Instantiate(LargeAst, this.gameObject.transform);
+        AsteroidCollisionHandler Handler = InstantiatedGB.GetComponent<AsteroidCollisionHandler>();
+        if (Handler)
+        { 
+            Handler.SetAstType(AsteroidType.Large);
+            Handler.SetAstManager(this);
+        }
+        _AstRefPool.Add(InstantiatedGB);
+
+        Vector3 RandomVel = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)).normalized;
+        Rigidbody AstRig = InstantiatedGB.GetComponent<Rigidbody>();
+        if (AstRig)
+        {
+            AstRig.velocity = RandomVel * Random.Range(MinimumRandomspeed, MaximumRandomSpeed);
+        }
+    }
+
+    //this function will destroy the ast attached to this and itself
+    public void DestroyedByBullet(GameObject AstRef, AsteroidType AstRefType)
+    {
+        if(AstRefType == AsteroidType.Large)
+        {
+            //large Ast is destroyed
+            //instante medium Ast
+            for(int i = 0; i < MediumAstGenerated; i++)
+            {
+                AstInstantiate(AsteroidType.Medium, AstRef);
+            }
+            
+            //remove the current ast ref from the ast pool and destroy teh ast
+            _AstRefPool.Remove(AstRef);
+            Destroy(AstRef);
+        }
+        else if(AstRefType == AsteroidType.Medium)
+        {
+            for (int i = 0; i < SmallAstGenerated; i++)
+            {
+                AstInstantiate(AsteroidType.Small, AstRef);
+            }
+
+            //remove the current ast ref from the ast pool and destroy teh ast
+            _AstRefPool.Remove(AstRef);
+            Destroy(AstRef);
+        }
+        else
+        {
+            //for small ast, removal is the only task required
+            //remove the current ast ref from the ast pool and destroy teh ast
+            _AstRefPool.Remove(AstRef);
+            Destroy(AstRef);
+        }
+
+        //add another check to the pool, if the pool is empty, destroy this gameobject
+        if(_AstRefPool.Count == 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    //general Instantiate function for medium and small ast
+    private void AstInstantiate(AsteroidType InstantAstType, GameObject AstDestroyed)
+    {
+        GameObject InstantiatedGB;
+        
+        //create ast based on the input ast type
+        if(InstantAstType == AsteroidType.Medium)
+        {
+            InstantiatedGB = Instantiate(MediumAst, AstDestroyed.transform.position, AstDestroyed.transform.rotation, this.gameObject.transform);
+        }
+        else
+        {
+            InstantiatedGB = Instantiate(SmallAst, AstDestroyed.transform.position, AstDestroyed.transform.rotation, this.gameObject.transform);
+        }
+        
+        AsteroidCollisionHandler Handler = InstantiatedGB.GetComponent<AsteroidCollisionHandler>();
+        if (Handler)
+        {
+
+            Handler.SetAstType(InstantAstType);
+            Handler.SetAstManager(this);
+        }
+        _AstRefPool.Add(InstantiatedGB);
+
+        Vector3 RandomVel = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)).normalized;
+        Rigidbody AstRig = InstantiatedGB.GetComponent<Rigidbody>();
+        if (AstRig)
+        {
+            AstRig.velocity = RandomVel * Random.Range(MinimumRandomspeed, MaximumRandomSpeed);
+        }
+    }
+}

@@ -10,13 +10,13 @@ public class PlayerMovement : MonoBehaviour
     public float MaximumAngularSpeed = 20.0f;
 
     private Rigidbody _MyRig;
-    private GameManager GameManager;
+    private GameManager _GameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         _MyRig = this.GetComponent<Rigidbody>();
-        GameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        _GameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -24,14 +24,18 @@ public class PlayerMovement : MonoBehaviour
     {
         //put other input check here
 
-        //since boundrary check is not rigid body related, put it here
-        if (GameManager)
+        //since boundrary check is not physics related, put it here
+        if (_GameManager)
         {
-            this.transform.position = GameManager.CheckAndModCood(this.transform.position);
+            this.transform.position = _GameManager.CheckAndModCood(this.transform.position);
+        }
+
+        if (Input.GetButtonUp("RotateCounterClockwise") || Input.GetButtonUp("RotateClockwise"))
+        {
+            _MyRig.angularVelocity = Vector3.zero;
         }
     }
 
-    //Physical calculations here
     private void FixedUpdate()
     {
         //put physical related input check here
@@ -41,11 +45,6 @@ public class PlayerMovement : MonoBehaviour
         {
             _MyRig.AddForce(CheckAcceleration(), ForceMode.Impulse);
             _MyRig.AddTorque(CheckRotation(), ForceMode.Impulse);
-
-            if(Input.GetButtonUp("RotateCounterClockwise") || Input.GetButtonUp("RotateClockwise"))
-            {
-                _MyRig.angularVelocity = Vector3.zero;
-            }
         }
         
         //add another check to overspeed
@@ -58,7 +57,6 @@ public class PlayerMovement : MonoBehaviour
             _MyRig.angularVelocity = _MyRig.angularVelocity.normalized * MaximumAngularSpeed;
         }
 
-        print(_MyRig.angularVelocity);
     }
 
     /*
@@ -117,5 +115,13 @@ public class PlayerMovement : MonoBehaviour
             RotateResult = Vector3.zero;
         }
         return RotateResult;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Star")
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
