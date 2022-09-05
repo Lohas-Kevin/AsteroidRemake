@@ -94,9 +94,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AccelerateRate: 5
-  RotateRate: 0.2
+  RotateRate: 0.8
   MaximumSpeed: 25
   MaximumAngularSpeed: 3
+  SpawnUndesctructableTime: 1
 --- !u!54 &453643626
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -8,15 +8,18 @@ public class PlayerMovement : MonoBehaviour
     public float RotateRate = 1.0f;
     public float MaximumSpeed = 50.0f;
     public float MaximumAngularSpeed = 20.0f;
+    public float SpawnUndesctructableTime = 1.0f;
 
     private Rigidbody _MyRig;
     private GameManager _GameManager;
+    private float _LiftTime;
 
     // Start is called before the first frame update
     void Start()
     {
         _MyRig = this.GetComponent<Rigidbody>();
         _GameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        _LiftTime = 0;
     }
 
     // Update is called once per frame
@@ -34,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
         {
             _MyRig.angularVelocity = Vector3.zero;
         }
+
+        _LiftTime += Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -119,11 +124,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Star")
+        if(collision.gameObject.tag == "Star" && _LiftTime >= SpawnUndesctructableTime)
         {
             if (_GameManager)
             {
                 _GameManager.ShipDestroyed();
+                _LiftTime = 0;
             }
         }
         

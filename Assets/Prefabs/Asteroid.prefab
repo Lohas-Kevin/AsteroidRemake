@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4470285300290636218
 MonoBehaviour:
@@ -47,7 +47,10 @@ MonoBehaviour:
   LargeAst: {fileID: 130102, guid: 04d0bf4be9447154188d86f6e3b8dce9, type: 3}
   MediumAst: {fileID: 141316, guid: 84cc3cd234dfc9d4d9d2e92c0eb0af75, type: 3}
   SmallAst: {fileID: 151664, guid: fa49e460baf435b4780da7196c2ab473, type: 3}
-  MaximumRandomSpeed: 3
-  MinimumRandomspeed: 1
+  MaximumRandomSpeed: 1
+  MinimumRandomSpeed: 5
   MediumAstGenerated: 1
   SmallAstGenerated: 3
+  LargeAstScore: 250
+  MediumAstScore: 125
+  SmallAstScore: 75

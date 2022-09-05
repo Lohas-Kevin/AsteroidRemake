@@ -8,6 +8,7 @@ public class GameplayUI : MonoBehaviour
 {
     public GameObject ScoreUI;
     public GameObject LivesUI;
+    public GameObject GameOverUI;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +37,14 @@ public class GameplayUI : MonoBehaviour
         if (text)
         {
             text.SetText("Scores: " + Score.ToString());
+        }
+    }
+
+    public void ActivateGameOverUI(bool Activated)
+    {
+        if (GameOverUI)
+        {
+            GameOverUI.SetActive(Activated);
         }
     }
 }

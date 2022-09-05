@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject BottomLeftCorner;
     public GameObject AstPrefab;
     public GameObject PlayerPrefab;
+
     
     public GameplayUI GameUI;
 
@@ -29,7 +30,8 @@ public class GameManager : MonoBehaviour
     private List<GameObject> _SpawnPoints;
     private bool _GameOver = false;
     private GameObject _PlayerRef;
-    
+    private HighestScore _HighestScoreTracker;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,28 +42,33 @@ public class GameManager : MonoBehaviour
         //looking for the spawn points
         _SpawnPoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("SpawnPoint"));
 
+        //looking for the score tracker
+        _HighestScoreTracker = GameObject.FindGameObjectWithTag("ScoreTracker").GetComponent<HighestScore>();
+
         GameStart();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(_GameOver && Input.GetButtonDown("Restart"))
+        {
+            //restart game here
+            GameStart();
+            GameUI.ActivateGameOverUI(false);
+        }
     }
 
     public void GameStart()
     {
-        //the _GameOver should be true, or the game will not be started
-        if(_GameOver == true)
-        {
-            print("ERROR: Wrong game state");
-            return;
-        }
-
         //reset the data
         _RemainingLives = AvaliableLives;
         _Score = 0;
         _GameOver = false;
+
+        //reset the GameUI
+        UpdateScore(_Score);
+        UpdateLives(_RemainingLives);
 
         //Spawn the player
         if (!PlayerPrefab)
@@ -73,6 +80,10 @@ public class GameManager : MonoBehaviour
         //Spawn the Asts
         
         List<GameObject> UsedSpawnPoints = new List<GameObject>();
+        if(_AstPool.Count != 0)
+        {
+            _AstPool.Clear();
+        }
         for(int i = 0; i < MaximumLargeAst; i++)
         {
             GameObject RandSpawnPoint = _SpawnPoints[Random.Range(0, _SpawnPoints.Count)];
@@ -85,6 +96,15 @@ public class GameManager : MonoBehaviour
         //restore the used spawn points back to the spawn pool
         _SpawnPoints.AddRange(UsedSpawnPoints);
         UsedSpawnPoints.Clear();
+    }
+
+    public void AstDestroyed(GameObject AstObj, Asteroid Ast)
+    {
+        //if an ast is completely destroyed (after 3 splits)
+        //remove this Ast from the AstPool and Spawn a new Ast
+        GameObject RandSpawnPoint = _SpawnPoints[Random.Range(0, _SpawnPoints.Count)];
+        AstObj.transform.SetPositionAndRotation(RandSpawnPoint.transform.position, RandSpawnPoint.transform.rotation);
+        Ast.InitialAstInstantiate();
     }
 
     public Vector3 GetTopRightCood()
@@ -184,7 +204,24 @@ public class GameManager : MonoBehaviour
         if(_RemainingLives == 0)
         {
             Destroy(_PlayerRef);
-        }
-        
+            _GameOver = true;
+
+            //destroy the asts in the scene
+            foreach(GameObject GO in _AstPool)
+            {
+                Destroy(GO);
+            }
+            _AstPool.Clear();
+
+            //set up the game over screen
+            GameUI.ActivateGameOverUI(true);
+
+            //Send the Score to Score Tracker
+            //we don't send "0" to the highest Score
+            if (_HighestScoreTracker && _Score != 0)
+            {
+                _HighestScoreTracker.AddScoreToTheBoard(_Score);
+            }
+        }    
     }
 }

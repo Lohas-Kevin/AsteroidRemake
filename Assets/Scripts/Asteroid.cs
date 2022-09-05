@@ -114,7 +114,7 @@ public class Asteroid : MonoBehaviour
         //add another check to the pool, if the pool is empty, destroy this gameobject
         if(_AstRefPool.Count == 0)
         {
-            Destroy(this.gameObject);
+            _GameManager.AstDestroyed(this.gameObject, this);
         }
     }
 
