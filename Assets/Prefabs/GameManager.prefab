@@ -46,4 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TopRightCorner: {fileID: 0}
   BottomLeftCorner: {fileID: 0}
+  AstPrefab: {fileID: 3279245525167414348, guid: f7d84c9a131ebd8498f85ce7b7e88d05, type: 3}
+  PlayerPrefab: {fileID: 2728612207938180470, guid: ea75074b3988f154ab3f8e8d9e8dbf12, type: 3}
+  GameUI: {fileID: 0}
+  PlayerRespawnPos: {x: 0, y: 0, z: 0}
+  MaximumLargeAst: 5
+  AvaliableLives: 3
   OutOfBoundraryDelta: 0.05

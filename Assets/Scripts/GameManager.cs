@@ -9,7 +9,13 @@ public class GameManager : MonoBehaviour
     //The boundaries of the game space
     public GameObject TopRightCorner;
     public GameObject BottomLeftCorner;
+    public GameObject AstPrefab;
+    public GameObject PlayerPrefab;
+    
     public GameplayUI GameUI;
+
+    public Vector3 PlayerRespawnPos = Vector3.zero;
+    public int MaximumLargeAst = 5;
     public int AvaliableLives = 3;
 
     //This is the delta for out of bound condition
@@ -19,6 +25,10 @@ public class GameManager : MonoBehaviour
 
     private int _RemainingLives;
     private int _Score = 0;
+    private List<GameObject> _AstPool = new List<GameObject>();
+    private List<GameObject> _SpawnPoints;
+    private bool _GameOver = false;
+    private GameObject _PlayerRef;
     
     // Start is called before the first frame update
     void Start()
@@ -26,12 +36,55 @@ public class GameManager : MonoBehaviour
         _RemainingLives = AvaliableLives;
         UpdateScore(_Score);
         UpdateLives(_RemainingLives);
+
+        //looking for the spawn points
+        _SpawnPoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("SpawnPoint"));
+
+        GameStart();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void GameStart()
+    {
+        //the _GameOver should be true, or the game will not be started
+        if(_GameOver == true)
+        {
+            print("ERROR: Wrong game state");
+            return;
+        }
+
+        //reset the data
+        _RemainingLives = AvaliableLives;
+        _Score = 0;
+        _GameOver = false;
+
+        //Spawn the player
+        if (!PlayerPrefab)
+        {
+            print("ERROR: PlayerPrefab is null");
+            return;
+        }
+        _PlayerRef = Instantiate(PlayerPrefab);
+        //Spawn the Asts
+        
+        List<GameObject> UsedSpawnPoints = new List<GameObject>();
+        for(int i = 0; i < MaximumLargeAst; i++)
+        {
+            GameObject RandSpawnPoint = _SpawnPoints[Random.Range(0, _SpawnPoints.Count)];
+            UsedSpawnPoints.Add(RandSpawnPoint);
+            _SpawnPoints.Remove(RandSpawnPoint);
+
+            GameObject SpawndAst = Instantiate(AstPrefab, RandSpawnPoint.transform.position, RandSpawnPoint.transform.rotation);
+            _AstPool.Add(SpawndAst);
+        }
+        //restore the used spawn points back to the spawn pool
+        _SpawnPoints.AddRange(UsedSpawnPoints);
+        UsedSpawnPoints.Clear();
     }
 
     public Vector3 GetTopRightCood()
@@ -114,5 +167,24 @@ public class GameManager : MonoBehaviour
             _RemainingLives -= 1;
         }
         GameUI.UpdateLivesUI(_RemainingLives);
+
+        //reset the ship if there are reamining lives
+        if(_RemainingLives > 0)
+        {
+            _PlayerRef.transform.position = Vector3.zero;
+            _PlayerRef.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            Rigidbody Rig = _PlayerRef.GetComponent<Rigidbody>();
+            if (Rig)
+            {
+                Rig.velocity = Vector3.zero;
+                Rig.angularVelocity = Vector3.zero;
+            }
+        }
+
+        if(_RemainingLives == 0)
+        {
+            Destroy(_PlayerRef);
+        }
+        
     }
 }

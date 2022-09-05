@@ -121,7 +121,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if(collision.gameObject.tag == "Star")
         {
-            Destroy(this.gameObject);
+            if (_GameManager)
+            {
+                _GameManager.ShipDestroyed();
+            }
         }
+        
     }
 }
