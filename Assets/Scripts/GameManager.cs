@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     //this delta defines the distance between the spaceship and boundary
     public float OutOfBoundraryDelta = 0.05f;
 
+    public string LeaderboardSceneName = "Leaderboard";
+
     private int _RemainingLives;
     private int _Score = 0;
     private List<GameObject> _AstPool = new List<GameObject>();
@@ -51,11 +53,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_GameOver && Input.GetButtonDown("Restart"))
+        if(_GameOver && Input.GetButtonDown("SwitchScene"))
         {
-            //restart game here
-            GameStart();
-            GameUI.ActivateGameOverUI(false);
+            //jump to leader board scene
+            if (_HighestScoreTracker)
+            {
+                _HighestScoreTracker.StartLoadScene(LeaderboardSceneName);
+            }
         }
     }
 
@@ -218,6 +222,10 @@ public class GameManager : MonoBehaviour
 
             //Send the Score to Score Tracker
             //we don't send "0" to the highest Score
+            if (!_HighestScoreTracker)
+            {
+                _HighestScoreTracker = GameObject.FindGameObjectWithTag("ScoreTracker").GetComponent<HighestScore>();
+            }
             if (_HighestScoreTracker && _Score != 0)
             {
                 _HighestScoreTracker.AddScoreToTheBoard(_Score);

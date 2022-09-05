@@ -8,6 +8,8 @@ TagManager:
   - Bullet
   - Star
   - Enemy
+  - SpawnPoint
+  - ScoreTracker
   layers:
   - Default
   - TransparentFX

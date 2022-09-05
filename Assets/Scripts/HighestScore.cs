@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class HighestScore : MonoBehaviour
@@ -35,6 +36,7 @@ public class HighestScore : MonoBehaviour
             //There is no enough space on the board
             _HighestScorePool.Add(InScore);
             _HighestScorePool.Sort();
+            _HighestScorePool.Reverse();
             _HighestScorePool.RemoveAt(_HighestScorePool.Count - 1);
         }
     }
@@ -42,6 +44,22 @@ public class HighestScore : MonoBehaviour
     public List<int> RetrieveSortedHighestScore()
     {
         _HighestScorePool.Sort();
+        _HighestScorePool.Reverse();
         return _HighestScorePool;
+    }
+
+    public void StartLoadScene(string SceneName)
+    {
+        StartCoroutine(LoadSceneAsync(SceneName));
+    }
+
+    IEnumerator LoadSceneAsync(string SceneName)
+    {
+        AsyncOperation AsyncLoad = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Single);
+
+        while(!AsyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 }
