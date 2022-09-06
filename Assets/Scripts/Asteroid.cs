@@ -8,6 +8,8 @@ public enum AsteroidType
 };
 
 //This is the manager class of the Asteroids
+//This class will manage the spawn of asteroids with different size
+//Designers are able to config the asteroids here
 public class Asteroid : MonoBehaviour
 {
     public GameObject LargeAst;
@@ -50,15 +52,18 @@ public class Asteroid : MonoBehaviour
     //This function is for GameManager to instantiate a Astroid
     public void InitialAstInstantiate()
     {
+        //instantiate a large Ast here
         GameObject InstantiatedGB = Instantiate(LargeAst, this.gameObject.transform);
         AsteroidCollisionHandler Handler = InstantiatedGB.GetComponent<AsteroidCollisionHandler>();
         if (Handler)
         { 
+            //set the instantiated ast type and Asteroid reference
             Handler.SetAstType(AsteroidType.Large);
             Handler.SetAstManager(this);
         }
         _AstRefPool.Add(InstantiatedGB);
 
+        //give the instantiated asteroid a initial velocity
         Vector3 RandomVel = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)).normalized;
         Rigidbody AstRig = InstantiatedGB.GetComponent<Rigidbody>();
         if (AstRig)
@@ -67,7 +72,8 @@ public class Asteroid : MonoBehaviour
         }
     }
 
-    //this function will destroy the ast attached to this and itself
+    //this function will destroy the ast attached to this manager
+    //when an ast instance is destroyed by a bullet
     public void DestroyedByBullet(GameObject AstRef, AsteroidType AstRefType)
     {
         if(AstRefType == AsteroidType.Large)
@@ -111,7 +117,7 @@ public class Asteroid : MonoBehaviour
             Destroy(AstRef);
         }
 
-        //add another check to the pool, if the pool is empty, destroy this gameobject
+        //add another check to the pool, if the pool is empty, reset this Ast Manager
         if(_AstRefPool.Count == 0)
         {
             _GameManager.AstDestroyed(this.gameObject, this);
@@ -136,12 +142,13 @@ public class Asteroid : MonoBehaviour
         AsteroidCollisionHandler Handler = InstantiatedGB.GetComponent<AsteroidCollisionHandler>();
         if (Handler)
         {
-
+            //set the configurations of the asteroid
             Handler.SetAstType(InstantAstType);
             Handler.SetAstManager(this);
         }
         _AstRefPool.Add(InstantiatedGB);
 
+        //give the asteroid an initial velocity
         Vector3 RandomVel = new Vector3(Random.Range(-1f, 1f), 0.0f, Random.Range(-1f, 1f)).normalized;
         Rigidbody AstRig = InstantiatedGB.GetComponent<Rigidbody>();
         if (AstRig)

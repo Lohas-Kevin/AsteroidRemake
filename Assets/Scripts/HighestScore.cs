@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
+//This is the cross-scene data manager class 
+//Async Load Scene public function is also placed in this class
 public class HighestScore : MonoBehaviour
 {
     public int HowManyScoresOnTheLeaderboard = 5;

@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//The class to handles the collision of asteroid
 public class AsteroidCollisionHandler : MonoBehaviour
 {
-
     private AsteroidType _AstType;
     private Asteroid _ParentAstManager;
     // Start is called before the first frame update

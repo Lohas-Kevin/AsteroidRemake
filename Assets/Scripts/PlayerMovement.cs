@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This class handles the input and the movement of the player
+//This class also handles the collision of the player
 public class PlayerMovement : MonoBehaviour
 {
     public float AccelerateRate = 1.0f;
@@ -124,6 +126,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //add a invicible time to avoid the situation of 
+        //an asteroid is at the spawn point of the player
         if(collision.gameObject.tag == "Star" && _LiftTime >= SpawnUndesctructableTime)
         {
             if (_GameManager)

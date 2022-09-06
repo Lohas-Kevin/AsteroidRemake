@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This is the class of bullet
+//This class mainly tracks the movement of a bullet
+//and handles the collisions of the bullet
 public class Bullet : MonoBehaviour
 {
     public float VelocityMultiplyer = 1.5f;
@@ -25,6 +28,7 @@ public class Bullet : MonoBehaviour
         }
     }
 
+    //The function to set the velocity of the bullet
     public void SetVelocity(Vector3 Direction, float scale)
     {
         if (MyRigidBody)
@@ -36,6 +40,7 @@ public class Bullet : MonoBehaviour
         Destroy(this.gameObject, HowLongBulletLast);
     }
 
+    //Collision handler of this bullet
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Star")

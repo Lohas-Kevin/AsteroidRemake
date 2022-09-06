@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Input handler of shoot action, attached to bullet spawn point
+//This class monitors the shoot button and spawn the bullet
 public class Shoot : MonoBehaviour
 {
     public GameObject bulletPrefab;

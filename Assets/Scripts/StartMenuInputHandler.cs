@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//this is the input handler of the start menu
 public class StartMenuInputHandler : MonoBehaviour
 {
     public string MainGameSceneName = "MainGame";

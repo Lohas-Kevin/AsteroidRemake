@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This is the class to manager the game
+//This class handles the game flow and game basic settings
+//This class also handles the next scene input
 public class GameManager : MonoBehaviour
 {
-    //This is the class to manager the game
-    
     //The boundaries of the game space
     public GameObject TopRightCorner;
     public GameObject BottomLeftCorner;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//Import from the Asteroid Art Assets
 public class RandomRotator : MonoBehaviour
 {
     [SerializeField]
